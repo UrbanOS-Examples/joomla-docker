@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  joomla:
+    image: scos-joomla:latest
+    container_name: joomla-docker_joomla
+    volumes:
+      - /home/centos/joomla-restore:/var/www/html:z
+      - /home/centos/joomla-cron/datajson:/etc/cron/cron.d/datajson:Z
+    environment:
+      - JOOMLA_DB_HOST=${JOOMLA_DB_HOST}
+      - JOOMLA_DB_USER=${JOOMLA_DB_USER}
+      - JOOMLA_DB_PASSWORD=${JOOMLA_DB_PASSWORD}
+      - JOOMLA_DB_NAME=${JOOMLA_DB_NAME}
+    ports:
+      - "8080:80"
+  nginx-joomla-sandbox:
+    image: nginx:latest
+    volumes:
+      - /home/centos/nginx-conf/:/etc/nginx/conf.d:Z
+    ports:
+      - "80:80"
+  cron-joomla:
+    image: cron-docker:latest
+    volumes:
+      - /home/centos/joomla-cron/cron.d:/etc/cron.d:Z
+      - /home/centos/joomla-restore:/var/www/html:z
+      - /home/centos/joomla-cron/python-scripts:/home/centos/python-scripts:Z
+
