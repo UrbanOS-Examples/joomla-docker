@@ -10,4 +10,4 @@ RUN apt-get install wget -y
 RUN apt-get install python -y
 
 # Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+CMD cron -f

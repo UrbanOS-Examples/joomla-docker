@@ -1,29 +1,53 @@
 version: '3'
 
 services:
-  joomla:
-    image: scos-joomla:latest
-    container_name: joomla-docker_joomla
-    volumes:
-      - /home/centos/joomla-restore:/var/www/html:z
-      - /home/centos/joomla-cron/datajson:/etc/cron/cron.d/datajson:Z
-    environment:
-      - JOOMLA_DB_HOST=${JOOMLA_DB_HOST}
-      - JOOMLA_DB_USER=${JOOMLA_DB_USER}
-      - JOOMLA_DB_PASSWORD=${JOOMLA_DB_PASSWORD}
-      - JOOMLA_DB_NAME=${JOOMLA_DB_NAME}
-    ports:
-      - "8080:80"
-  nginx-joomla-sandbox:
-    image: nginx:latest
-    volumes:
-      - /home/centos/nginx-conf/:/etc/nginx/conf.d:Z
-    ports:
-      - "80:80"
-  cron-joomla:
-    image: cron-docker:latest
-    volumes:
-      - /home/centos/joomla-cron/cron.d:/etc/cron.d:Z
-      - /home/centos/joomla-restore:/var/www/html:z
-      - /home/centos/joomla-cron/python-scripts:/home/centos/python-scripts:Z
+  cron_sidecar:
+    build:
+      context: cron-docker/
+    image: 'joomla-cron:latest'
 
+  restore_sidecar:
+    build:
+      context: joomla/
+    image: 'joomla-sidecar:latest'
+    links:
+      - joomladb:mysql
+    environment:
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: us-east-2
+      S3_BUCKET_NAME: scos-prod-joomla-backups
+      S3_FILE_NAME: site-www.smartcolumbusos.com-20180628-200001edt.zip
+      JOOMLA_SITE_NAME: Smart Columbus Operating System
+      JOOMLA_ADMIN_EMAIL: foo@example.com
+      JOOMLA_SITE_URL: http://www.smartcolumbusos.com
+      JOOMLA_DB_HOST: joomladb
+      JOOMLA_DB_USER: root
+      JOOMLA_DB_PASSWORD: foobarpass1
+      JOOMLA_DB_NAME: joomla
+      JOOMLA_DB_PREFIX: smrt_
+    volumes:
+      - joomla-data:/var/www/html
+
+  joomla:
+    image: 'joomla:3.8.8-php5.6-apache'
+    links:
+      - joomladb:mysql
+    ports:
+      - 80:80
+    environment:
+      JOOMLA_DB_HOST: joomladb
+      JOOMLA_DB_USER: root
+      JOOMLA_DB_PASSWORD: foobarpass1
+      JOOMLA_DB_NAME: joomla
+      JOOMLA_DB_PREFIX: smrt_
+    volumes:
+      - joomla-data:/var/www/html
+
+  joomladb:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: foobarpass1
+
+volumes:
+  joomla-data:
