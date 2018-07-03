@@ -9,9 +9,7 @@ services:
   restore_sidecar:
     build:
       context: joomla/
-    image: 'joomla-sidecar:latest'
-    links:
-      - joomladb:mysql
+    image: 'joomla-restore:latest'
     environment:
       AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
@@ -20,7 +18,7 @@ services:
       S3_FILE_NAME: site-www.smartcolumbusos.com-20180628-200001edt.zip
       JOOMLA_SITE_NAME: Smart Columbus Operating System
       JOOMLA_ADMIN_EMAIL: foo@example.com
-      JOOMLA_SITE_URL: http://www.smartcolumbusos.com
+      JOOMLA_SITE_URL: http://localhost
       JOOMLA_DB_HOST: joomladb
       JOOMLA_DB_USER: root
       JOOMLA_DB_PASSWORD: foobarpass1
@@ -31,10 +29,6 @@ services:
 
   joomla:
     image: 'joomla:3.8.8-php5.6-apache'
-    links:
-      - joomladb:mysql
-    ports:
-      - 80:80
     environment:
       JOOMLA_DB_HOST: joomladb
       JOOMLA_DB_USER: root
@@ -43,6 +37,16 @@ services:
       JOOMLA_DB_PREFIX: smrt_
     volumes:
       - joomla-data:/var/www/html
+
+  nginx:
+    build:
+      context: nginx/
+    image: joomla-nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      NGINX_HOST: localhost
 
   joomladb:
     image: mysql:5.6

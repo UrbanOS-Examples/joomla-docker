@@ -15,9 +15,10 @@ ENV AWS_ACCESS_KEY \
     JOOMLA_DB_PREFIX
 
 COPY unite.phar /opt/
-COPY launch.sh /opt/
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     awscli
+
+COPY launch.sh /opt/
 
 ENTRYPOINT /opt/launch.sh

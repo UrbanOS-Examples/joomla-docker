@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -e
+
+[ "${S3_FILE_NAME}" = "$(cat /var/www/html/restored)" ] && exit 0
 
 cat <<EOF >/var/www/html/.htaccess
 RewriteEngine On
@@ -75,6 +77,6 @@ EOF
 
 php /opt/unite.phar /tmp/restore_config.xml --debug
 
-# comment out/change lines that force redirect user to https.  Note: Brittle
 sed -i '25,27s/^/#/' /var/www/html/.htaccess
-sed -i "s/force_ssl = '2'/force_ssl = '0'/" /var/www/html/configuration.php
+
+echo "${S3_FILE_NAME}" > /var/www/html/restored
