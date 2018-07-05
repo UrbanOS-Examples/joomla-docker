@@ -18,7 +18,7 @@ services:
       S3_FILE_NAME: site-www.smartcolumbusos.com-20180628-200001edt.zip
       JOOMLA_SITE_NAME: Smart Columbus Operating System
       JOOMLA_ADMIN_EMAIL: foo@example.com
-      JOOMLA_SITE_URL: http://localhost
+      JOOMLA_SITE_URL: http://${NGINX_HOST}
       JOOMLA_DB_HOST: joomladb
       JOOMLA_DB_USER: root
       JOOMLA_DB_PASSWORD: foobarpass1
@@ -46,7 +46,7 @@ services:
       - 80:80
       - 443:443
     environment:
-      NGINX_HOST: localhost
+      NGINX_HOST: ${NGINX_HOST}
 
   joomladb:
     image: mysql:5.6
