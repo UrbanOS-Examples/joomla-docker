@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Joomla Backup",
+        "comment": "Backup Joomla to S3",
+        "schedule": "0 1 * * *",
+        "command": "/usr/local/bin/php /var/www/html/cli/akeeba-backup.php",
+        "project": "joomla",
+        "container": "joomla"
+    }
+]

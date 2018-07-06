@@ -5,6 +5,8 @@ services:
     build:
       context: cron-docker/
     image: 'joomla-cron:latest'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   restore_sidecar:
     build:
