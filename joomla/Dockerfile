@@ -1,4 +1,4 @@
-FROM joomla:latest
+FROM joomla:3.8.7-php5.6
 
 ENV AWS_ACCESS_KEY \
     AWS_SECRET_KEY \
