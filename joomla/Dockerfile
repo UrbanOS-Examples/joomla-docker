@@ -19,10 +19,6 @@ COPY unite.phar /opt/
 RUN apt-get update && apt-get install --no-install-recommends -y \
     awscli
 
-# Non dockerized production joomla is configured to write backups to this directory.  The configuration
-# cannot be changed automatically, so the fix until joomla is dockerized is to make this directory present
-RUN mkdir -p /home/admin/web/smartcolumbusos.com/public_html/administrator/components/com_akeeba/backup/
-
 COPY launch.sh /opt/
 
 ENTRYPOINT /opt/launch.sh

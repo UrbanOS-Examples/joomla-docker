@@ -1,9 +1,9 @@
 [
     {
-        "name": "Joomla Backup",
+        "name": "JoomlaBackup",
         "comment": "Backup Joomla to S3",
         "schedule": "0 1 * * *",
-        "command": "/usr/local/bin/php /var/www/html/cli/akeeba-backup.php",
+        "command": "bash -c \"mkdir -p /home/admin/web/smartcolumbusos.com/public_html/administrator/components/com_akeeba/backup/ && chown www-data:www-data /home/admin/web/smartcolumbusos.com/public_html/administrator/components/com_akeeba/backup/ && /usr/local/bin/php /var/www/html/cli/akeeba-backup.php\"",
         "project": "joomla",
         "container": "joomla",
         "onstart": true
