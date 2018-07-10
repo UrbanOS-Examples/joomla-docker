@@ -7,6 +7,8 @@ services:
     image: 'joomla-cron:latest'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - "joomla"
 
   restore_sidecar:
     build:
