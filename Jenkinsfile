@@ -11,9 +11,15 @@ node ('master') {
     def backupSidecar
     def nginx
     stage('Build') {
-        restoreSidecar = docker.build("scos/joomla-restore:${GIT_COMMIT_HASH}")
-        backupSidecar = docker.build("scos/joomla-cron:${GIT_COMMIT_HASH}")
-        nginx = docker.build("scos/joomla-nginx:${GIT_COMMIT_HASH}")
+        dir('joomla') {
+            restoreSidecar = docker.build("scos/joomla-restore:${GIT_COMMIT_HASH}")
+        }
+        dir('cron-docker') {
+            backupSidecar = docker.build("scos/joomla-cron:${GIT_COMMIT_HASH}")
+        }
+        dir('nginx') {
+            nginx = docker.build("scos/joomla-nginx:${GIT_COMMIT_HASH}")
+        }
     }
 
     stage('Test') {
