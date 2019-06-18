@@ -28,15 +28,9 @@ spec:
         - containerPort: 80
           name: http
         volumeMounts:
-        # - mountPath: /docker-entrypoint-initdb.d/init.sql
-        #   name: joomla-init
-        #   subPath: init.sql
         - mountPath: /var/www/html
           name: joomla-data
       volumes:
-      # - name: joomla-init
-      #   configMap:
-      #     name: {{ template "scos-joomla.fullname" . }}-init
       - name: joomla-data
         persistentVolumeClaim:
           claimName: {{ template "scos-joomla.fullname" . }}-storage

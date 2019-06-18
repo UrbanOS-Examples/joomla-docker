@@ -15,7 +15,7 @@ storage:
 replicaCount: 1
 
 image:
-  repository: smillardhntb/php_73_apache
+  repository: 199837183662.dkr.ecr.us-east-2.amazonaws.com/scos/joomla
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -29,11 +29,11 @@ service:
 
 ingress:
   enabled: true
-  scheme: "internal"
-  subnets: "subnet-1d104c47,subnet-6aa8eb13,subnet-b2167af9"
-  security_groups: "sg-0c5cf1805c74e53a5" #Load balancer Security Group
-  root_dns_zone: "dev-smartos.com"
-  certificate_arns: "arn:aws:acm:us-west-2:073132350570:certificate/ba58125c-cde0-40a4-96ad-6c60484e3192"
+  scheme: ""
+  subnets: ""
+  security_groups: ""
+  root_dns_zone: ""
+  certificate_arns: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

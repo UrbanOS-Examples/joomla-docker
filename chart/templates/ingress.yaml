@@ -18,7 +18,7 @@ spec:
     serviceName: {{ .Values.service.name }}
     servicePort: {{ .Values.service.port }}
   rules:
-  - host: www3.{{ .Values.ingress.root_dns_zone }}
+  - host: www.{{ .Values.ingress.root_dns_zone }}
     http:
       paths:
       - path: /*
