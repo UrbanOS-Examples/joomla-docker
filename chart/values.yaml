@@ -1,0 +1,54 @@
+# Default values for scos-joomla.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploy:
+  updateStrategy:
+      type: RollingUpdate
+
+storage:
+  size: 10Gi
+  mode: ReadWriteOnce
+
+  
+
+replicaCount: 1
+
+image:
+  repository: smillardhntb/php_73_apache
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  name: scos-joomla
+  port: 80
+  type: NodePort
+
+ingress:
+  enabled: true
+  scheme: "internal"
+  subnets: "subnet-1d104c47,subnet-6aa8eb13,subnet-b2167af9"
+  security_groups: "sg-0c5cf1805c74e53a5" #Load balancer Security Group
+  root_dns_zone: "dev-smartos.com"
+  certificate_arns: "arn:aws:acm:us-west-2:073132350570:certificate/ba58125c-cde0-40a4-96ad-6c60484e3192"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

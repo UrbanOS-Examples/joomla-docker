@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "scos-joomla.fullname" . }}
+  labels:
+    component: joomla
+spec:
+  selector:
+    matchLabels:
+      component: joomla
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        component: joomla
+        app.kubernetes.io/name: {{ include "scos-joomla.name" . }}
+        helm.sh/chart: {{ include "scos-joomla.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: joomla
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        # - mountPath: /docker-entrypoint-initdb.d/init.sql
+        #   name: joomla-init
+        #   subPath: init.sql
+        - mountPath: /var/www/html
+          name: joomla-data
+      volumes:
+      # - name: joomla-init
+      #   configMap:
+      #     name: {{ template "scos-joomla.fullname" . }}-init
+      - name: joomla-data
+        persistentVolumeClaim:
+          claimName: {{ template "scos-joomla.fullname" . }}-storage
