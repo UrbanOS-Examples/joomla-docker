@@ -5,6 +5,7 @@ metadata:
   labels:
     component: joomla
 spec:
+  storageClassName: standard-ssd
   accessModes:
   - {{ .Values.storage.mode }}
   resources:
