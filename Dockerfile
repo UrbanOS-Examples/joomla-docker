@@ -1,8 +1,6 @@
 FROM php:7.3-apache
 
-RUN a2enmod rewrite; \
-    apt-get update; \
-    apt-get install -y vim;
+RUN a2enmod rewrite
 
 RUN set -ex; \
     \
