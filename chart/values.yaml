@@ -10,10 +10,6 @@ storage:
   size: 10Gi
   mode: ReadWriteOnce
 
-  
-
-replicaCount: 1
-
 image:
   repository: 199837183662.dkr.ecr.us-east-2.amazonaws.com/scos/joomla
   tag: latest
