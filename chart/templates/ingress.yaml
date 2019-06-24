@@ -31,3 +31,10 @@ spec:
         backend:
           serviceName: redirect
           servicePort: use-annotation
+  - host: {{ .Values.ingress.root_dns_zone }}
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: redirect
+          servicePort: use-annotation
