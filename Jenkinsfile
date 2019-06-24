@@ -28,13 +28,13 @@ node ('infrastructure') {
                 image.push()
                 image.push('latest')
             }
-            deployJoomlaTo(environment: 'dev')
+            deployTo(environment: 'dev')
         }
 
         doStageIfPromoted('Deploy to Staging')  {
             def environment = 'staging'
 
-            deployJoomlaTo(environment: 'staging')
+            deployTo(environment: 'staging')
 
             scos.applyAndPushGitHubTag(environment)
 
@@ -47,7 +47,7 @@ node ('infrastructure') {
             def releaseTag = env.BRANCH_NAME
             def promotionTag = 'prod'
 
-            deployConsumerTo(environment: 'prod', internal: false)
+            deployTo(environment: 'prod', internal: false)
 
             scos.applyAndPushGitHubTag(promotionTag)
 
@@ -60,7 +60,7 @@ node ('infrastructure') {
     }
 }
 
-def deployJoomlaTo(params = [:]) {
+def deployTo(params = [:]) {
     def environment = params.get('environment')
     if (environment == null) throw new IllegalArgumentException("environment must be specified")
 
