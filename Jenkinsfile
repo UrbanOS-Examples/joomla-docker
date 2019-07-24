@@ -9,7 +9,7 @@ properties([
     pipelineTriggers([scos.dailyBuildTrigger()]),
 ])
 
-def image, smokeTestImage
+def image
 def doStageIf = scos.&doStageIf
 def doStageIfRelease = doStageIf.curry(scos.changeset.isRelease)
 def doStageUnlessRelease = doStageIf.curry(!scos.changeset.isRelease)
@@ -23,70 +23,19 @@ node ('infrastructure') {
             image = docker.build("scos/joomla:${env.GIT_COMMIT_HASH}")
         }
 
-        doStageUnlessRelease('Deploy to Dev') {
+        doStageUnlessRelease('Tag Dev Image') {
             scos.withDockerRegistry {
                 image.push()
-                image.push('latest')
-            }
-            deployTo(environment: 'dev')
-        }
-
-        doStageIfPromoted('Deploy to Staging')  {
-            def environment = 'staging'
-
-            deployTo(environment: 'staging')
-
-            scos.applyAndPushGitHubTag(environment)
-
-            scos.withDockerRegistry {
-                image.push(environment)
+                image.push('development')
             }
         }
 
-        doStageIfRelease('Deploy to Production') {
-            def releaseTag = env.BRANCH_NAME
-            def promotionTag = 'prod'
-
-            deployTo(environment: 'prod', internal: false)
-
-            scos.applyAndPushGitHubTag(promotionTag)
-
+        doStageIfRelease('Tag Release Image') {
             scos.withDockerRegistry {
                 image = scos.pullImageFromDockerRegistry("scos/joomla", env.GIT_COMMIT_HASH)
-                image.push(releaseTag)
-                image.push(promotionTag)
+                image.push()
+                image.push(env.BRANCH_NAME)
             }
         }
-    }
-}
-
-def deployTo(params = [:]) {
-    def environment = params.get('environment')
-    if (environment == null) throw new IllegalArgumentException("environment must be specified")
-
-    def internal = params.get('internal', true)
-
-    scos.withEksCredentials(environment) {
-
-        def terraformOutputs = scos.terraformOutput(environment)
-        def subnets = terraformOutputs.public_subnets.value.join(/\\,/)
-        def allowInboundTrafficSG = terraformOutputs.allow_all_security_group.value
-        def certificateARN = terraformOutputs.root_tls_certificate_arn.value
-        def ingressScheme = internal ? 'internal' : 'internet-facing'
-        def rootDnsZone = terraformOutputs.root_dns_zone_name.value
-
-        sh("""#!/bin/bash
-            set -e
-            helm init --client-only
-            helm upgrade --install scos-joomla ./chart \
-                --namespace=joomla \
-                --set ingress.enabled="true" \
-                --set ingress.scheme="${ingressScheme}" \
-                --set ingress.subnets="${subnets}" \
-                --set ingress.security_groups="${allowInboundTrafficSG}" \
-                --set ingress.root_dns_zone="${rootDnsZone}" \
-                --set ingress.certificate_arns="${certificateARN}" \
-                --set image.tag="${env.GIT_COMMIT_HASH}"
-        """.trim())
     }
 }
