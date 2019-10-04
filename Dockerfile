@@ -40,3 +40,5 @@ RUN set -ex; \
     \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*
+
+COPY apache2.conf /etc/apache2/apache2.conf
