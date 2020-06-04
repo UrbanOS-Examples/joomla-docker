@@ -39,6 +39,9 @@ RUN set -ex; \
     | xargs -rt apt-mark manual; \
     \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*; \
+    apt update; \
+    apt install -y libapache2-mod-security2;
 
 COPY apache2.conf /etc/apache2/apache2.conf
+COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
